@@ -19,9 +19,9 @@ export interface WinState {
 
 let nextKey = 1;
 
-const DESKTOP_ICONS: { label: string; icon: "hd" | "ipod" | "appletstore"; opens: AppId }[] = [
+const DESKTOP_ICONS: { label: string; icon: string; opens: AppId }[] = [
   { label: "Macintosh HD", icon: "hd", opens: "finder" },
-  { label: "iPod", icon: "ipod", opens: "finder" },
+  { label: "Mac OS X CD", icon: "osxcd", opens: "finder" },
   { label: "Applet Store", icon: "appletstore", opens: "appletstore" },
 ];
 

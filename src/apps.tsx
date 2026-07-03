@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { AppIcon, Placeholder, type IconId } from "./icons";
+import { AppIcon, type IconId } from "./icons";
+import { ICON_COLLECTION } from "./icon-manifest";
 
 export type AppId =
   | "finder"
-  | "dashboard"
-  | "ichat"
-  | "ie"
-  | "textedit"
+  | "mail"
+  | "browser"
+  | "simpletext"
+  | "quicktime"
   | "appletstore"
   | "trash"
   | "about";
@@ -25,25 +26,30 @@ export interface AppDef {
 
 /* ---------------- Finder ---------------- */
 
-const SIDEBAR = [
-  "Network",
-  "Macintosh HD",
-  "iPod",
-  "Desktop",
-  "Applications",
-  "Documents",
-  "Movies",
-  "Music",
-  "Pictures",
+const SIDEBAR: { name: string; icon: IconId }[] = [
+  { name: "Network", icon: "globe" },
+  { name: "Macintosh HD", icon: "hd" },
+  { name: "Mac OS X CD", icon: "osxcd" },
+  { name: "Desktop", icon: "folder" },
+  { name: "Applications", icon: "folder-apps" },
+  { name: "Documents", icon: "folder" },
+  { name: "Internet", icon: "folder-internet" },
+  { name: "Music", icon: "folder-music" },
+  { name: "Pictures", icon: "folder-images" },
+  { name: "Games", icon: "folder-games" },
 ];
 
 const FILES: { name: string; icon: IconId }[] = [
-  { name: "Applications", icon: "folder" },
-  { name: "Library", icon: "folder" },
-  { name: "System", icon: "folder" },
-  { name: "Users", icon: "folder" },
-  { name: "Developer", icon: "folder" },
-  { name: "Read Me.rtf", icon: "textedit" },
+  { name: "Applications", icon: "folder-apps" },
+  { name: "System", icon: "folder-system" },
+  { name: "Utilities", icon: "folder-utilities" },
+  { name: "Internet", icon: "folder-internet" },
+  { name: "Music", icon: "folder-music" },
+  { name: "Pictures", icon: "folder-images" },
+  { name: "Games", icon: "folder-games" },
+  { name: "SimpleText", icon: "simpletext" },
+  { name: "Read Me!", icon: "readme" },
+  { name: "Secrets", icon: "lock" },
 ];
 
 function Finder(_: { openApp: OpenApp }) {
@@ -62,15 +68,12 @@ function Finder(_: { openApp: OpenApp }) {
         <div className="finder-sidebar">
           {SIDEBAR.map((s) => (
             <div
-              key={s}
-              className={"finder-side-item" + (s === side ? " active" : "")}
-              onClick={() => setSide(s)}
+              key={s.name}
+              className={"finder-side-item" + (s.name === side ? " active" : "")}
+              onClick={() => setSide(s.name)}
             >
-              <Placeholder
-                id={s === "Macintosh HD" ? "hd" : s === "iPod" ? "ipod" : "folder"}
-                className="mini-icon"
-              />
-              {s}
+              <AppIcon id={s.icon} className="mini-icon" />
+              {s.name}
             </div>
           ))}
         </div>
@@ -90,14 +93,14 @@ function Finder(_: { openApp: OpenApp }) {
           ))}
         </div>
       </div>
-      <div className="finder-status">6 items, 74.21 GB available</div>
+      <div className="finder-status">10 items, 74.21 GB available</div>
     </div>
   );
 }
 
-/* ---------------- TextEdit ---------------- */
+/* ---------------- SimpleText ---------------- */
 
-function TextEdit(_: { openApp: OpenApp }) {
+function SimpleText(_: { openApp: OpenApp }) {
   return (
     <div className="textedit">
       <div className="textedit-ruler" />
@@ -118,7 +121,7 @@ function TextEdit(_: { openApp: OpenApp }) {
 function AboutMac(_: { openApp: OpenApp }) {
   return (
     <div className="about-mac">
-      <Placeholder id="apple" className="about-logo" />
+      <AppIcon id="osx" className="about-logo" />
       <h1>Mac OS X</h1>
       <div className="ver">Version 10.4 “aquaOS”</div>
       <div className="spec">
@@ -132,42 +135,78 @@ function AboutMac(_: { openApp: OpenApp }) {
   );
 }
 
-/* ---------------- iChat ---------------- */
+/* ---------------- Mail ---------------- */
 
-const BUDDIES = [
-  { name: "Steve", note: "One more thing…", on: true },
-  { name: "Kevin", note: "brb lunch", on: false },
-  { name: "Jenny", note: "Listening to iTunes", on: true },
-  { name: "Woz", note: "Available", on: true },
+const MESSAGES = [
+  { from: "The Iconfactory", subject: "World of Aqua Vol. 1 has shipped!", time: "7:12 PM", unread: true },
+  { from: "Steve", subject: "One more thing…", time: "6:48 PM", unread: true },
+  { from: "Applet Store", subject: "Your download is ready", time: "4:03 PM", unread: false },
+  { from: "Kevin", subject: "Re: LAN party Saturday?", time: "2:17 PM", unread: false },
+  { from: "Mailer-Daemon", subject: "Returned mail: user unknown", time: "11:30 AM", unread: false },
 ];
 
-function IChat(_: { openApp: OpenApp }) {
+function Mail(_: { openApp: OpenApp }) {
+  const [sel, setSel] = useState(0);
   return (
-    <div className="ichat">
-      <div className="ichat-me">
-        <div className="avatar">Me</div>
-        <div>
-          <div style={{ fontWeight: "bold" }}>seungyong</div>
-          <div className="status">● Available</div>
-        </div>
+    <div className="mail">
+      <div className="mail-toolbar">
+        <AppIcon id="mail" className="mail-toolbar-icon" />
+        <span style={{ fontWeight: "bold" }}>Inbox</span>
+        <span style={{ marginLeft: "auto", fontSize: 11, color: "#444" }}>
+          {MESSAGES.filter((m) => m.unread).length} unread
+        </span>
       </div>
-      <div className="ichat-list">
-        {BUDDIES.map((b) => (
-          <div className="buddy" key={b.name}>
-            <div className="avatar">{b.name[0]}</div>
-            <div>
-              <div style={{ fontWeight: "bold" }}>{b.name}</div>
-              <div style={{ fontSize: 11, opacity: 0.75 }}>{b.note}</div>
+      <div className="mail-list">
+        {MESSAGES.map((m, i) => (
+          <div
+            key={i}
+            className={"mail-row" + (i === sel ? " selected" : "")}
+            onClick={() => setSel(i)}
+          >
+            <span className={"mail-dot" + (m.unread ? " unread" : "")} />
+            <div className="mail-meta">
+              <div className="mail-from">{m.from}</div>
+              <div className="mail-subject">{m.subject}</div>
             </div>
-            <div className={"b-status " + (b.on ? "on" : "away")} />
+            <span className="mail-time">{m.time}</span>
           </div>
         ))}
+      </div>
+      <div className="mail-preview">
+        <b>{MESSAGES[sel].from}</b> — {MESSAGES[sel].subject}
+        <p style={{ marginTop: 8, color: "#555" }}>
+          This message was delivered over dial-up and is best viewed at
+          800×600. Do not reply after 56 kilobits.
+        </p>
       </div>
     </div>
   );
 }
 
-/* ---------------- Internet Explorer ---------------- */
+/* ---------------- QuickTime Player ---------------- */
+
+function QuickTime(_: { openApp: OpenApp }) {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <div className="qt">
+      <div className="qt-screen">
+        <AppIcon id="quicktime" className="qt-logo" />
+        <div className="qt-title">Sample Movie.mov</div>
+      </div>
+      <div className="qt-controls">
+        <button className="qt-play" onClick={() => setPlaying(!playing)}>
+          {playing ? "❚❚" : "▶"}
+        </button>
+        <div className="qt-track">
+          <div className="qt-progress" style={{ width: playing ? "38%" : "0%" }} />
+        </div>
+        <span className="qt-time">{playing ? "0:07" : "0:00"} / 0:19</span>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Browser ---------------- */
 
 function Browser({ openApp }: { openApp: OpenApp }) {
   return (
@@ -185,8 +224,8 @@ function Browser({ openApp }: { openApp: OpenApp }) {
       </div>
       <div className="browser-page">
         <div style={{ padding: "40px 30px", textAlign: "center" }}>
-          <div style={{ width: 60, margin: "0 auto 16px" }}>
-            <Placeholder id="apple" />
+          <div style={{ width: 72, margin: "0 auto 16px" }}>
+            <AppIcon id="internet" />
           </div>
           <h1 style={{ fontSize: 24, marginBottom: 8 }}>Welcome to the Internet.</h1>
           <p style={{ color: "#667", fontSize: 13, marginBottom: 20 }}>
@@ -203,15 +242,6 @@ function Browser({ openApp }: { openApp: OpenApp }) {
 
 /* ---------------- Applet Store ---------------- */
 
-const STORE_APPS: { id: IconId; name: string }[] = [
-  { id: "finder", name: "Finder" },
-  { id: "ichat", name: "iChat AV" },
-  { id: "ie", name: "Internet Explorer" },
-  { id: "textedit", name: "TextEdit" },
-  { id: "dashboard", name: "Dashboard" },
-  { id: "ipod", name: "iPod Updater" },
-];
-
 function AppletStore(_: { openApp: OpenApp }) {
   return (
     <div className="applet-store">
@@ -220,12 +250,15 @@ function AppletStore(_: { openApp: OpenApp }) {
           <AppIcon id="appletstore" />
         </div>
         <h1>Applet Store</h1>
-        <p>Hand-polished software, delivered over a 56k modem near you.</p>
+        <p>
+          Featuring the World of Aqua collection — {ICON_COLLECTION.length} hand-polished
+          icons, delivered over a 56k modem near you.
+        </p>
         <button className="aqua-btn olive">Download</button>
       </div>
       <div className="store-grid">
-        {STORE_APPS.map((a) => (
-          <div className="store-card" key={a.name}>
+        {ICON_COLLECTION.map((a) => (
+          <div className="store-card" key={a.id}>
             <AppIcon id={a.id} className="sc-icon" />
             <div className="sc-name">{a.name}</div>
             <button className="aqua-btn">Download</button>
@@ -241,23 +274,8 @@ function AppletStore(_: { openApp: OpenApp }) {
 function Trash(_: { openApp: OpenApp }) {
   return (
     <div className="empty-state">
-      <Placeholder id="trash" className="es-icon" />
+      <AppIcon id="trash" className="es-icon" />
       <div>The Trash is empty.</div>
-    </div>
-  );
-}
-
-/* ---------------- Dashboard (a lone widget) ---------------- */
-
-function Dashboard(_: { openApp: OpenApp }) {
-  const now = new Date();
-  return (
-    <div className="empty-state" style={{ background: "rgba(40,40,40,0.9)", color: "#eee" }}>
-      <Placeholder id="dashboard" className="es-icon" />
-      <div style={{ fontSize: 26, fontWeight: "bold" }}>
-        {now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
-      </div>
-      <div style={{ opacity: 0.7 }}>Cupertino — 72° and sunny, probably</div>
     </div>
   );
 }
@@ -266,11 +284,11 @@ function Dashboard(_: { openApp: OpenApp }) {
 
 export const APPS: Record<AppId, AppDef> = {
   finder: { id: "finder", name: "Finder", icon: "finder", metal: true, w: 640, h: 420, component: Finder },
-  textedit: { id: "textedit", name: "TextEdit", icon: "textedit", w: 480, h: 380, component: TextEdit },
-  about: { id: "about", name: "About This Mac", icon: "apple", w: 300, h: 320, component: AboutMac },
-  ichat: { id: "ichat", name: "iChat", icon: "ichat", metal: true, w: 260, h: 380, component: IChat },
-  ie: { id: "ie", name: "Internet Explorer", icon: "ie", w: 560, h: 420, component: Browser },
-  appletstore: { id: "appletstore", name: "Applet Store", icon: "appletstore", metal: true, w: 560, h: 460, component: AppletStore },
-  dashboard: { id: "dashboard", name: "Dashboard", icon: "dashboard", w: 340, h: 260, component: Dashboard },
+  mail: { id: "mail", name: "Mail", icon: "mail", metal: true, w: 440, h: 400, component: Mail },
+  browser: { id: "browser", name: "Browser", icon: "browser", w: 560, h: 420, component: Browser },
+  simpletext: { id: "simpletext", name: "SimpleText", icon: "simpletext", w: 480, h: 380, component: SimpleText },
+  quicktime: { id: "quicktime", name: "QuickTime Player", icon: "quicktime", metal: true, w: 420, h: 340, component: QuickTime },
+  appletstore: { id: "appletstore", name: "Applet Store", icon: "appletstore", metal: true, w: 620, h: 480, component: AppletStore },
   trash: { id: "trash", name: "Trash", icon: "trash", metal: true, w: 420, h: 300, component: Trash },
+  about: { id: "about", name: "About This Mac", icon: "osx", w: 300, h: 330, component: AboutMac },
 };

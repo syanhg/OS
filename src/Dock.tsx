@@ -4,10 +4,10 @@ import { APPS, type AppId } from "./apps";
 
 const DOCK_APPS: AppId[] = [
   "finder",
-  "dashboard",
-  "ichat",
-  "ie",
-  "textedit",
+  "mail",
+  "browser",
+  "simpletext",
+  "quicktime",
   "appletstore",
 ];
 
