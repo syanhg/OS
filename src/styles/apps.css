@@ -38,7 +38,10 @@
 .finder-nav button:last-child {
   border-radius: 0 5px 5px 0;
   border-left: none;
-  color: #999;
+}
+
+.finder-nav button:disabled {
+  color: #aaa;
 }
 
 .finder-main {
@@ -415,9 +418,31 @@
 
 .browser-page {
   flex: 1;
-  overflow: auto;
+  position: relative;
+  overflow: hidden;
   background: #fff;
-  user-select: text;
+}
+
+.browser-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+.browser-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 30px;
+  background: #fff;
+  color: #667;
+  font-size: 12px;
+  pointer-events: none;
 }
 
 /* ================= Applet Store ================= */

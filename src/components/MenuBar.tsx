@@ -268,11 +268,15 @@ export function MenuBar() {
     );
 
   const [positions, setPositions] = useState<Record<string, number>>({});
+  const [centers, setCenters] = useState<Record<string, number>>({});
   const measure = (key: string) => (el: HTMLDivElement | null) => {
     if (el && barRef.current) {
-      const left =
-        el.getBoundingClientRect().left - barRef.current.getBoundingClientRect().left;
+      const barLeft = barRef.current.getBoundingClientRect().left;
+      const r = el.getBoundingClientRect();
+      const left = r.left - barLeft;
+      const center = left + r.width / 2;
       setPositions((p) => (p[key] === left ? p : { ...p, [key]: left }));
+      setCenters((c) => (c[key] === center ? c : { ...c, [key]: center }));
     }
   };
 
@@ -344,7 +348,10 @@ export function MenuBar() {
         {open === "volume" && (
           <div
             className="volume-panel"
-            style={{ left: (positions["volume"] ?? 0) + 4 }}
+            style={{
+              left: centers["volume"] ?? 0,
+              transform: "translateX(-50%)",
+            }}
           >
             <VolumeSlider
               value={os.volume}
