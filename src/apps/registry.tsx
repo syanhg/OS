@@ -8,6 +8,7 @@ import { AppletStore } from "./AppletStore";
 import { Trash } from "./Trash";
 import { AboutMac } from "./AboutMac";
 import { SystemPrefs } from "./SystemPrefs";
+import { Viewer } from "./Viewer";
 
 export const APPS: Record<AppId, AppDef> = {
   finder: { id: "finder", name: "Finder", icon: "finder", metal: true, w: 640, h: 420, component: Finder },
@@ -19,4 +20,5 @@ export const APPS: Record<AppId, AppDef> = {
   trash: { id: "trash", name: "Trash", icon: "trash", metal: true, w: 420, h: 300, component: Trash },
   about: { id: "about", name: "About This Mac", icon: "osx", w: 300, h: 330, component: AboutMac },
   sysprefs: { id: "sysprefs", name: "System Preferences", icon: "folder-utilities", w: 460, h: 380, component: SystemPrefs },
+  viewer: { id: "viewer", name: "PictureViewer", icon: "quicktime-pictureviewer", metal: true, w: 340, h: 300, component: Viewer },
 };

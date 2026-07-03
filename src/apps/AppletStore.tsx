@@ -6,14 +6,8 @@ export function AppletStore(_: { openApp: OpenApp }) {
   return (
     <div className="applet-store">
       <div className="store-hero">
-        <div style={{ width: 56, height: 56 }}>
-          <AppIcon id="appletstore" />
-        </div>
+        <AppIcon id="appletstore" className="store-hero-icon" />
         <h1>Applet Store</h1>
-        <p>
-          Featuring the World of Aqua collection — {ICON_COLLECTION.length} hand-polished
-          icons, delivered over a 56k modem near you.
-        </p>
         <button className="aqua-btn olive">Download</button>
       </div>
       <div className="store-grid">

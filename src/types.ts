@@ -11,7 +11,8 @@ export type AppId =
   | "appletstore"
   | "trash"
   | "about"
-  | "sysprefs";
+  | "sysprefs"
+  | "viewer";
 
 export type OpenApp = (app: AppId) => void;
 
