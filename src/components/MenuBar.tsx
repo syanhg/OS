@@ -11,6 +11,7 @@ interface MenuItem {
   disabled?: boolean;
   sep?: boolean;
   shortcut?: string;
+  mark?: string;
 }
 
 function useClock() {
@@ -62,9 +63,8 @@ export function MenuBar() {
   }, [open]);
 
   const day = now.toLocaleDateString("en-US", { weekday: "short" });
-  const mon = now.toLocaleDateString("en-US", { month: "short" });
   const time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-  const clock = `${day} ${mon} ${now.getDate()} ${time}`;
+  const clock = `${day} ${time}`;
   const fullDate = now.toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -75,13 +75,25 @@ export function MenuBar() {
   const menus: Record<string, MenuItem[]> = {
     apple: [
       { label: "About This Mac", action: () => os.openApp("about") },
+      { label: "Get Mac OS X Software…", action: () => os.openApp("browser") },
       { sep: true, label: "" },
       { label: "System Preferences…", action: () => os.openApp("sysprefs") },
       { label: "Dock", disabled: true },
+      { label: "Location", disabled: true },
+      { sep: true, label: "" },
+      { label: "Recent Items", disabled: true },
+      { sep: true, label: "" },
+      {
+        label: "Force Quit…",
+        disabled: !os.activeApp,
+        action: () => os.activeApp && os.quitApp(os.activeApp),
+      },
       { sep: true, label: "" },
       { label: "Sleep", action: () => os.power("sleep") },
       { label: "Restart…", action: () => os.power("restart") },
       { label: "Shut Down…", action: () => os.power("shutdown") },
+      { sep: true, label: "" },
+      { label: "Log Out…", shortcut: "⇧⌘Q", action: () => os.power("shutdown") },
     ],
     File: [
       { label: "New Finder Window", shortcut: "⌘N", action: () => os.openApp("finder") },
@@ -137,9 +149,23 @@ export function MenuBar() {
         disabled: !os.hasActiveWindow,
         action: () => os.minimizeActiveWindow(),
       },
-      { label: "Zoom", disabled: !os.hasActiveWindow },
+      {
+        label: "Zoom",
+        disabled: !os.hasActiveWindow,
+        action: () => os.zoomActiveWindow(),
+      },
       { sep: true, label: "" },
       { label: "Bring All to Front", disabled: true },
+      ...(os.windows.length > 0
+        ? [
+            { sep: true, label: "" },
+            ...os.windows.map((w) => ({
+              label: w.title,
+              mark: w.active ? "✓" : w.minimized ? "◆" : undefined,
+              action: () => os.selectWindow(w.key),
+            })),
+          ]
+        : []),
     ],
     Help: [{ label: `${appName} Help`, disabled: true }],
     clock: [
@@ -193,6 +219,7 @@ export function MenuBar() {
                 setOpen(null);
               }}
             >
+              {item.mark && <span className="menu-mark">{item.mark}</span>}
               {item.label}
               {item.shortcut && <span className="menu-shortcut">{item.shortcut}</span>}
             </div>
@@ -263,7 +290,9 @@ export function MenuBar() {
             onClick={() => toggle("spotlight")}
             title="Spotlight"
           >
-            <MenuSearch />
+            <span className="spot-circle">
+              <MenuSearch color="#fff" size={10} />
+            </span>
           </div>
         </div>
 

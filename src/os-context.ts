@@ -19,13 +19,23 @@ export interface CtxItem {
 
 export type PowerMode = "sleep" | "restart" | "shutdown";
 
+export interface WindowInfo {
+  key: number;
+  title: string;
+  minimized: boolean;
+  active: boolean;
+}
+
 export interface OS {
   openApp: (app: AppId) => void;
   quitApp: (app: AppId) => void;
   closeActiveWindow: () => void;
   minimizeActiveWindow: () => void;
+  zoomActiveWindow: () => void;
   hasActiveWindow: boolean;
   activeApp: AppId | null;
+  windows: WindowInfo[];
+  selectWindow: (key: number) => void;
   newFolder: () => void;
   volume: number;
   setVolume: (v: number) => void;

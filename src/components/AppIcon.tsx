@@ -144,17 +144,23 @@ export function MenuSpeaker({ volume }: { volume: number }) {
 }
 
 /* spotlight magnifier */
-export function MenuSearch() {
+export function MenuSearch({
+  color = "#1a1a1a",
+  size = 15,
+}: {
+  color?: string;
+  size?: number;
+}) {
   return (
-    <svg viewBox="0 0 18 18" width="15" height="15" style={{ display: "block" }}>
-      <circle cx="7.2" cy="7.2" r="5.2" fill="none" stroke="#1a1a1a" strokeWidth="2" />
+    <svg viewBox="0 0 18 18" width={size} height={size} style={{ display: "block" }}>
+      <circle cx="7.2" cy="7.2" r="5.2" fill="none" stroke={color} strokeWidth="2.4" />
       <line
         x1="11.2"
         y1="11.2"
         x2="16.2"
         y2="16.2"
-        stroke="#1a1a1a"
-        strokeWidth="2.4"
+        stroke={color}
+        strokeWidth="2.6"
         strokeLinecap="round"
       />
     </svg>
