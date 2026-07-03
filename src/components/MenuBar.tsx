@@ -41,6 +41,45 @@ function beep(volume: number) {
   }
 }
 
+/* custom-drawn vertical Aqua slider: thin recessed groove, round glass thumb */
+const VSLIDER_H = 78;
+const VTHUMB = 15;
+
+function VolumeSlider({
+  value,
+  onChange,
+  onCommit,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  onCommit: () => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const setFromEvent = (e: React.PointerEvent) => {
+    const r = trackRef.current!.getBoundingClientRect();
+    const v = 1 - (e.clientY - r.top - VTHUMB / 2) / (r.height - VTHUMB);
+    onChange(Math.min(1, Math.max(0, v)));
+  };
+  return (
+    <div
+      ref={trackRef}
+      className="aqua-vslider"
+      onPointerDown={(e) => {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        setFromEvent(e);
+      }}
+      onPointerMove={(e) => e.buttons === 1 && setFromEvent(e)}
+      onPointerUp={onCommit}
+    >
+      <div className="aqua-vslider-track" />
+      <div
+        className="aqua-vslider-thumb"
+        style={{ top: (1 - value) * (VSLIDER_H - VTHUMB) }}
+      />
+    </div>
+  );
+}
+
 export function MenuBar() {
   const os = useOS();
   const [open, setOpen] = useState<string | null>(null);
@@ -305,17 +344,12 @@ export function MenuBar() {
         {open === "volume" && (
           <div
             className="volume-panel"
-            style={{ left: (positions["volume"] ?? 0) - 14 }}
+            style={{ left: (positions["volume"] ?? 0) + 4 }}
           >
-            <input
-              className="vol-slider"
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
+            <VolumeSlider
               value={os.volume}
-              onChange={(e) => os.setVolume(Number(e.target.value))}
-              onPointerUp={() => beep(os.volume)}
+              onChange={os.setVolume}
+              onCommit={() => beep(os.volume)}
             />
           </div>
         )}
