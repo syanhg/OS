@@ -74,6 +74,9 @@ export function Window({
         onPointerDown={startDrag}
         onPointerMove={moveDrag}
         onPointerUp={() => (drag.current = null)}
+        onDoubleClick={(e) => {
+          if (!(e.target as HTMLElement).closest(".tl")) onMinimize();
+        }}
       >
         <div className="traffic">
           <div className="tl close" onClick={onClose}>

@@ -10,7 +10,8 @@ export type AppId =
   | "quicktime"
   | "appletstore"
   | "trash"
-  | "about";
+  | "about"
+  | "sysprefs";
 
 export type OpenApp = (app: AppId) => void;
 

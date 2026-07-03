@@ -11,6 +11,25 @@ npm install
 npm run dev
 ```
 
+## Interactions
+
+- **Right-click** the desktop (New Folder, Clean Up, Change Desktop
+  Background…), desktop icons (Open, Rename, Move to Trash), and dock
+  icons (Open/Show, Quit; the Trash gets Empty Trash).
+- **Drag** desktop icons anywhere; drop one on the dock Trash to
+  delete it. Drag on empty desktop for marquee selection; shift-click
+  for multi-select.
+- **Shortcuts** (⌘ or Ctrl — browsers reserve some ⌘ combos, Ctrl
+  always works): W close window, M minimize, Q quit app, N new Finder
+  window, ⌫ move selection to Trash. Esc closes menus.
+- **Menu bar**: volume slider with interface beep, Spotlight search
+  (finds apps and icons), clock dropdown, and a working Apple menu —
+  Sleep, Restart and Shut Down actually run, boot screen included.
+- **Windows**: double-click a title bar to minimize; green button
+  zooms.
+- **System Preferences** (Apple menu) changes the wallpaper and
+  volume.
+
 ## Project layout
 
 ```

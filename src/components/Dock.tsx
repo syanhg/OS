@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { AppIcon } from "./AppIcon";
 import { APPS } from "../apps/registry";
+import { useOS } from "../os-context";
 import type { AppId } from "../types";
 
 const DOCK_APPS: AppId[] = [
@@ -27,6 +28,7 @@ export function Dock({
   onLaunch: (app: AppId) => void;
   onRestore: (key: number) => void;
 }) {
+  const os = useOS();
   const itemRefs = useRef(new Map<string, HTMLDivElement>());
   const [sizes, setSizes] = useState<Record<string, number>>({});
   const [settled, setSettled] = useState(true);
@@ -72,7 +74,9 @@ export function Dock({
     label: string,
     icon: JSX.Element,
     indicator: boolean,
-    onClick: () => void
+    onClick: () => void,
+    onContextMenu?: (e: React.MouseEvent) => void,
+    extraClass = ""
   ) => {
     const size = sizes[key] ?? BASE;
     return (
@@ -85,11 +89,17 @@ export function Dock({
         className={
           "dock-item" +
           (settled ? " settle" : "") +
-          (bounce === key ? " bouncing" : "")
+          (bounce === key ? " bouncing" : "") +
+          (extraClass ? ` ${extraClass}` : "")
         }
         onMouseEnter={() => setHover(key)}
         onMouseLeave={() => setHover((h) => (h === key ? null : h))}
         onClick={onClick}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onContextMenu?.(e);
+        }}
       >
         {hover === key && <div className="dock-label">{label}</div>}
         <div className="dock-icon-box" style={{ width: size, height: size }}>
@@ -100,6 +110,28 @@ export function Dock({
     );
   };
 
+  const appCtx = (e: React.MouseEvent, app: AppId) =>
+    os.showContextMenu(e.clientX, e.clientY, [
+      { label: running.has(app) ? "Show" : "Open", action: () => launch(app) },
+      { sep: true, label: "" },
+      {
+        label: "Quit",
+        disabled: !running.has(app),
+        action: () => os.quitApp(app),
+      },
+    ]);
+
+  const trashCtx = (e: React.MouseEvent) =>
+    os.showContextMenu(e.clientX, e.clientY, [
+      { label: "Open", action: () => launch("trash") },
+      { sep: true, label: "" },
+      {
+        label: "Empty Trash",
+        disabled: os.trash.length === 0,
+        action: () => os.emptyTrash(),
+      },
+    ]);
+
   return (
     <div className="dock-wrap">
       <div className="dock" onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
@@ -109,7 +141,8 @@ export function Dock({
             APPS[app].name,
             <AppIcon id={APPS[app].icon} className="dock-icon" />,
             running.has(app),
-            () => launch(app)
+            () => launch(app),
+            (e) => appCtx(e, app)
           )
         )}
         <div className="dock-sep" />
@@ -125,9 +158,14 @@ export function Dock({
         {item(
           "trash",
           "Trash",
-          <AppIcon id="trash" className="dock-icon" />,
+          <AppIcon
+            id={os.trash.length > 0 ? "trash-full" : "trash"}
+            className="dock-icon"
+          />,
           running.has("trash"),
-          () => launch("trash")
+          () => launch("trash"),
+          trashCtx,
+          "trash-item"
         )}
       </div>
     </div>

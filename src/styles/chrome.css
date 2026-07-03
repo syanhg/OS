@@ -109,23 +109,14 @@
 
 /* ================= Desktop icons ================= */
 
-.desktop-icons {
-  position: absolute;
-  top: calc(var(--menubar-h) + 16px);
-  right: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 26px;
-  z-index: 1;
-}
-
 .desktop-icon {
+  position: absolute;
   width: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  z-index: 1;
 }
 
 .desktop-icon .di-img {
@@ -268,36 +259,231 @@
   box-shadow: 1px 0 0 rgba(255, 255, 255, 0.5);
 }
 
-/* ================= Notification (top-right) ================= */
+/* ================= Menu bar extras ================= */
 
-.notification {
-  position: absolute;
-  top: calc(var(--menubar-h) + 14px);
-  right: 16px;
-  z-index: 9500;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  background: rgba(248, 248, 244, 0.92);
-  border-radius: 10px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  color: #222;
+.menu-apple-img {
+  width: 15px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
 }
 
-.notification .notif-close {
+.menu-title.glyph svg {
+  display: block;
+}
+
+.menu-shortcut {
+  float: right;
+  margin-left: 28px;
+  color: #888;
+}
+
+.menu-item:hover .menu-shortcut {
+  color: #dce8fb;
+}
+
+/* volume slider dropdown */
+.volume-panel {
   position: absolute;
-  top: -12px;
-  right: -12px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  top: var(--menubar-h);
+  padding: 12px 10px;
+  background: rgba(252, 252, 252, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  z-index: 10001;
+}
+
+.vol-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: 90px;
+  width: 18px;
+  accent-color: var(--aqua-blue);
+}
+
+/* spotlight search dropdown */
+.spotlight-panel {
+  position: absolute;
+  top: var(--menubar-h);
+  right: 4px;
+  width: 300px;
+  background: rgba(250, 250, 252, 0.97);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  z-index: 10001;
+  overflow: hidden;
+}
+
+.spotlight-input {
+  width: 100%;
   border: none;
-  background: rgba(70, 70, 70, 0.85);
+  outline: none;
+  padding: 7px 12px;
+  font-family: var(--font-aqua);
+  font-size: 13px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.spot-results {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.spot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+}
+
+.spot-row:hover {
+  background: linear-gradient(to bottom, #5c9bfa 0%, #1e62d0 100%);
   color: #fff;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.spot-row:hover .spot-kind {
+  color: #dce8fb;
+}
+
+.spot-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.spot-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-kind {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: #999;
+  flex: 0 0 auto;
+}
+
+.spot-empty {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #999;
+}
+
+/* ================= Context menu ================= */
+
+.ctx-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10999;
+}
+
+.ctx-menu {
+  position: fixed;
+  min-width: 190px;
+  padding: 4px 0;
+  background: rgba(252, 252, 252, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  z-index: 11000;
+}
+
+/* ================= Desktop extras ================= */
+
+.marquee {
+  position: absolute;
+  z-index: 2;
+  border: 1px solid rgba(70, 125, 220, 0.9);
+  background: rgba(95, 150, 235, 0.22);
+  pointer-events: none;
+}
+
+.di-rename {
+  font-family: var(--font-aqua);
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  padding: 0 4px;
+  border: 1px solid var(--aqua-select);
+  border-radius: 3px;
+  outline: none;
+  background: #fff;
+}
+
+/* ================= Power states ================= */
+
+.power-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: #000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: power-fade 0.9s ease;
+}
+
+@keyframes power-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.power-hint {
+  color: #555;
+  font-size: 12px;
+  padding-bottom: 40px;
+  animation: hint-appear 2s;
+}
+
+@keyframes hint-appear {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20001;
+  background: linear-gradient(to bottom, #c8c8c8, #b4b4b4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+}
+
+.boot-apple {
+  width: 78px;
+  height: 96px;
+}
+
+.boot-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid rgba(90, 90, 90, 0.25);
+  border-top-color: #6e6e6e;
+  animation: boot-spin 0.85s linear infinite;
+}
+
+@keyframes boot-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
