@@ -1,21 +1,10 @@
 import { useRef, useState } from "react";
-import { APPS, type AppId } from "./apps";
+import { APPS } from "../apps/registry";
+import type { AppId, WinState } from "../types";
 import { Window } from "./Window";
 import { MenuBar } from "./MenuBar";
 import { Dock } from "./Dock";
-import { AppIcon } from "./icons";
-
-export interface WinState {
-  key: number;
-  app: AppId;
-  title: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  z: number;
-  minimized: boolean;
-}
+import { AppIcon } from "./AppIcon";
 
 let nextKey = 1;
 

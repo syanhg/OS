@@ -1,0 +1,68 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --font-aqua: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+  --menubar-h: 25px;
+  --aqua-blue: #3875d7;
+  --aqua-select: #316ac5;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-aqua);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+/* ================= Desktop ================= */
+
+.desktop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background-color: #4a7ab5;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ================= Aqua scrollbars ================= */
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(to right, #e8e8e8, #f6f6f6);
+  border-left: 1px solid #d0d0d0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: #7fb2f0;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0) 45%,
+    rgba(0, 0, 60, 0.18)
+  );
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

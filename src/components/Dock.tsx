@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { AppIcon } from "./icons";
-import { APPS, type AppId } from "./apps";
+import { AppIcon } from "./AppIcon";
+import { APPS } from "../apps/registry";
+import type { AppId } from "../types";
 
 const DOCK_APPS: AppId[] = [
   "finder",

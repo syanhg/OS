@@ -1,0 +1,7 @@
+/* aquaOS — Mac OS X (2000–2005 era) Aqua recreation.
+   Lucida Grande, glass pills, pinstripes, brushed metal. */
+
+@import "./base.css";     /* reset, tokens, desktop, scrollbars */
+@import "./chrome.css";   /* menu bar, desktop icons, dock, notification */
+@import "./window.css";   /* windows, traffic lights, aqua buttons */
+@import "./apps.css";     /* per-app interiors */

@@ -1,12 +1,11 @@
 import { useState } from "react";
+import type { IconId } from "../types";
 
 /*
  * Every icon renders through <AppIcon id="..."/> → public/icons/<id>.png.
  * The World of Aqua Vol 1 set (plus aliases like finder.png → aquaos.png)
  * lives there; if a PNG is missing, a built-in SVG placeholder renders.
  */
-
-export type IconId = string;
 
 const failed = new Set<string>();
 

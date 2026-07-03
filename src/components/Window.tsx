@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import type { WinState } from "./Desktop";
+import type { WinState } from "../types";
 
 const MENUBAR_H = 25;
 

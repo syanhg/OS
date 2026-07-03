@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { MenuApple } from "./icons";
-import type { AppId, OpenApp } from "./apps";
+import { MenuApple } from "./AppIcon";
+import type { OpenApp } from "../types";
 
 interface MenuItem {
   label: string;
@@ -47,7 +47,7 @@ export function MenuBar({
       { label: "Shut Down…", disabled: true },
     ],
     File: [
-      { label: "New Finder Window", action: () => openApp("finder" as AppId) },
+      { label: "New Finder Window", action: () => openApp("finder") },
       { label: "New Folder", disabled: true },
       { sep: true, label: "" },
       { label: "Open", disabled: true },
