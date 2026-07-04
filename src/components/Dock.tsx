@@ -7,6 +7,7 @@ import type { AppId } from "../types";
 const DOCK_APPS: AppId[] = [
   "finder",
   "mail",
+  "chatgpt",
   "browser",
   "simpletext",
   "quicktime",

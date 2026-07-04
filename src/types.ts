@@ -9,6 +9,7 @@ export type AppId =
   | "simpletext"
   | "quicktime"
   | "appletstore"
+  | "chatgpt"
   | "trash"
   | "about"
   | "sysprefs"

@@ -5,6 +5,7 @@ import { Browser } from "./Browser";
 import { SimpleText } from "./SimpleText";
 import { QuickTime } from "./QuickTime";
 import { AppletStore } from "./AppletStore";
+import { ChatGPT } from "./ChatGPT";
 import { Trash } from "./Trash";
 import { AboutMac } from "./AboutMac";
 import { SystemPrefs } from "./SystemPrefs";
@@ -17,6 +18,7 @@ export const APPS: Record<AppId, AppDef> = {
   simpletext: { id: "simpletext", name: "SimpleText", icon: "simpletext", w: 480, h: 380, component: SimpleText },
   quicktime: { id: "quicktime", name: "QuickTime Player", icon: "quicktime", metal: true, w: 420, h: 340, component: QuickTime },
   appletstore: { id: "appletstore", name: "Applet Store", icon: "appletstore", metal: true, w: 620, h: 480, component: AppletStore },
+  chatgpt: { id: "chatgpt", name: "ChatGPT", icon: "chatgpt", w: 640, h: 520, component: ChatGPT },
   trash: { id: "trash", name: "Trash", icon: "trash", metal: true, w: 420, h: 300, component: Trash },
   about: { id: "about", name: "About This Mac", icon: "osx", w: 300, h: 330, component: AboutMac },
   sysprefs: { id: "sysprefs", name: "System Preferences", icon: "folder-utilities", w: 460, h: 380, component: SystemPrefs },

@@ -83,9 +83,42 @@ function AppleLogo({ className }: P) {
   );
 }
 
+function ChatGPTLogo({ className }: P) {
+  return (
+    <svg viewBox="0 0 64 64" className={className}>
+      <defs>
+        <radialGradient id="cgG" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stopColor="#d8f5f0" />
+          <stop offset="45%" stopColor="#5fc9c6" />
+          <stop offset="100%" stopColor="#1f7d9c" />
+        </radialGradient>
+      </defs>
+      <circle cx="32" cy="32" r="30" fill="url(#cgG)" stroke="#146080" strokeWidth="1.5" />
+      <path
+        d="M32 14a18 18 0 1 1-12.7 5.3"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="4"
+        strokeLinecap="round"
+        opacity="0.9"
+      />
+      <path
+        d="M32 22a10 10 0 1 0 7.1 2.9"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+      <ellipse cx="26" cy="20" rx="14" ry="6" fill="#fff" opacity="0.25" />
+    </svg>
+  );
+}
+
 const PLACEHOLDERS: Record<string, (p: P) => JSX.Element> = {
   apple: AppleLogo,
   folder: FolderIcon,
+  chatgpt: ChatGPTLogo,
 };
 
 /* ---------- menu bar glyphs (accurate monochrome vectors) ---------- */
