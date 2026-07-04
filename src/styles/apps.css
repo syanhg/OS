@@ -811,9 +811,58 @@
   color: #222;
 }
 
+.chatgpt-bubble.bot.typing {
+  color: #888;
+  font-style: italic;
+}
+
+.chatgpt-bubble.error {
+  background: #fdeceb;
+  border: 1px solid #e0a8a2;
+  color: #7a2b22;
+}
+
 .chatgpt-who {
   font-weight: bold;
   margin-bottom: 3px;
+}
+
+.chatgpt-prefs {
+  flex: 1;
+  padding: 22px 26px;
+  max-width: 480px;
+}
+
+.chatgpt-prefs-heading {
+  font-size: 15px;
+  font-weight: bold;
+  color: #17335c;
+  margin-bottom: 8px;
+}
+
+.chatgpt-prefs-note {
+  font-size: 12px;
+  color: #445;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.chatgpt-prefs-note code {
+  font-size: 11px;
+  background: #e4eaf1;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.chatgpt-key-input {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.chatgpt-prefs-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .chatgpt-inputrow {
