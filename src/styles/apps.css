@@ -865,6 +865,49 @@
   gap: 10px;
 }
 
+.chatgpt-history {
+  flex: 1;
+  overflow: auto;
+  background: #fff;
+}
+
+.chatgpt-history-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.chatgpt-history-row:hover {
+  background: #eef4fb;
+}
+
+.chatgpt-history-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.chatgpt-history-label {
+  font-weight: bold;
+  color: #17335c;
+}
+
+.chatgpt-history-preview {
+  font-size: 11px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatgpt-history-time {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: #888;
+}
+
 .chatgpt-inputrow {
   flex: 0 0 auto;
   display: flex;

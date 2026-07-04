@@ -5,7 +5,7 @@ import type { OpenApp } from "../types";
 /*
  * An iChat-era Aqua client for ChatGPT. Without a key it runs a canned
  * script, same spirit as aquaOS's other mock apps (Mail, Browser). Add
- * a Gemini API key in Preferences and it calls the real thing — this
+ * a Gemini API key in Preferences and it calls the real thing. aquaOS
  * is a static GitHub Pages site, so there's no server to hold a secret
  * key; the key you enter is stored only in your own browser and sent
  * only to Google's API.
@@ -15,6 +15,12 @@ interface Msg {
   from: "you" | "bot";
   text: string;
   error?: boolean;
+}
+
+interface Conversation {
+  label: string;
+  time: string;
+  messages: Msg[];
 }
 
 const INTRO: Msg[] = [
@@ -30,16 +36,50 @@ const INTRO: Msg[] = [
   },
 ];
 
+const INITIAL_CONVOS: Conversation[] = [
+  { label: "Today", time: "Just now", messages: INTRO },
+  {
+    label: "Yesterday",
+    time: "Yesterday, 6:42 PM",
+    messages: [
+      { from: "you", text: "Can you help me set up my AirPort wireless network?" },
+      {
+        from: "bot",
+        text: "Sure! Open System Preferences, choose Network, then AirPort. Enter your network name and WEP key, and you should be online in a minute.",
+      },
+      { from: "you", text: "What's WEP again?" },
+      {
+        from: "bot",
+        text: "Wired Equivalent Privacy, the encryption standard everyone's using on wireless networks this year. Keep that key secret!",
+      },
+    ],
+  },
+  {
+    label: "Earlier",
+    time: "6/12/02, 11:15 AM",
+    messages: [
+      { from: "you", text: "Got any advice for using this new iPod?" },
+      {
+        from: "bot",
+        text: "Keep FireWire handy for syncing, and remember the tagline: a thousand songs in your pocket.",
+      },
+      { from: "you", text: "How much does it hold again?" },
+      {
+        from: "bot",
+        text: "5 gigabytes, which is more MP3s than anyone could reasonably need. For now.",
+      },
+    ],
+  },
+];
+
 const REPLIES = [
-  "That's a great question — let me think it over while this 56k connection catches up.",
+  "That's a great question. Let me think it over while this 56k connection catches up.",
   "I'd tell you, but AOL Instant Messenger just started buzzing again.",
   "Sure thing! Though you might want to double-check that on Ask Jeeves too.",
   "Good question. Let me consult my 20 GB hard drive for a moment...",
-  "I'm just a humble Aqua-era chatbot — my knowledge stops somewhere around dial-up speeds.",
+  "I'm just a humble Aqua-era chatbot. My knowledge stops somewhere around dial-up speeds.",
   "Interesting! Napster's down again so I can't verify that against anything, but it sounds right.",
 ];
-
-const CONVERSATIONS = ["Today", "Yesterday", "Earlier"];
 
 const KEY_STORAGE = "aquaos-gemini-key";
 const GEMINI_MODEL = "gemini-2.5-flash";
@@ -82,22 +122,35 @@ async function askGemini(apiKey: string, history: Msg[]): Promise<string> {
 }
 
 export function ChatGPT(_: { openApp: OpenApp }) {
-  const [messages, setMessages] = useState<Msg[]>(INTRO);
+  const [convos, setConvos] = useState<Conversation[]>(INITIAL_CONVOS);
+  const [active, setActive] = useState(0);
   const [draft, setDraft] = useState("");
-  const [convo, setConvo] = useState(0);
   const [showPrefs, setShowPrefs] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem(KEY_STORAGE) ?? "");
   const [keyDraft, setKeyDraft] = useState(apiKey);
   const [sending, setSending] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  const messages = convos[active].messages;
+
+  const updateMessages = (updater: (m: Msg[]) => Msg[]) => {
+    setConvos((cs) => cs.map((c, i) => (i === active ? { ...c, messages: updater(c.messages) } : c)));
+  };
 
   useEffect(() => {
     bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, sending]);
 
   const newChat = () => {
-    setMessages(INTRO);
+    setConvos((cs) => cs.map((c, i) => (i === 0 ? { ...c, messages: INTRO, time: "Just now" } : c)));
+    setActive(0);
     setDraft("");
+  };
+
+  const deleteConvo = () => {
+    updateMessages(() => []);
   };
 
   const saveKey = () => {
@@ -116,18 +169,18 @@ export function ChatGPT(_: { openApp: OpenApp }) {
     if (!apiKey) {
       const reply = REPLIES[replyIndex % REPLIES.length];
       replyIndex++;
-      setMessages((m) => [...m, { from: "you", text }, { from: "bot", text: reply }]);
+      updateMessages((m) => [...m, { from: "you", text }, { from: "bot", text: reply }]);
       return;
     }
 
     const history = [...messages, { from: "you" as const, text }];
-    setMessages(history);
+    updateMessages(() => history);
     setSending(true);
     try {
       const reply = await askGemini(apiKey, history);
-      setMessages((m) => [...m, { from: "bot", text: reply }]);
+      updateMessages((m) => [...m, { from: "bot", text: reply }]);
     } catch (err) {
-      setMessages((m) => [
+      updateMessages((m) => [
         ...m,
         { from: "bot", text: err instanceof Error ? err.message : String(err), error: true },
       ]);
@@ -135,6 +188,80 @@ export function ChatGPT(_: { openApp: OpenApp }) {
       setSending(false);
     }
   };
+
+  if (showHistory) {
+    return (
+      <div className="chatgpt">
+        <div className="chatgpt-header">
+          <AppIcon id="chatgpt" className="chatgpt-logo" />
+          <div className="chatgpt-title">
+            <div className="chatgpt-name">ChatGPT</div>
+            <div className="chatgpt-sub">History</div>
+          </div>
+        </div>
+        <div className="chatgpt-history">
+          {convos.map((c, i) => {
+            const last = c.messages[c.messages.length - 1];
+            return (
+              <div
+                key={c.label}
+                className="chatgpt-history-row"
+                onClick={() => {
+                  setActive(i);
+                  setShowHistory(false);
+                }}
+              >
+                <div className="chatgpt-history-meta">
+                  <div className="chatgpt-history-label">{c.label}</div>
+                  <div className="chatgpt-history-preview">
+                    {last ? `${last.from === "you" ? "You: " : "ChatGPT: "}${last.text}` : "No messages yet."}
+                  </div>
+                </div>
+                <span className="chatgpt-history-time">{c.time}</span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="chatgpt-prefs-actions" style={{ padding: "10px 14px" }}>
+          <button className="aqua-btn blue" onClick={() => setShowHistory(false)}>
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (showHelp) {
+    return (
+      <div className="chatgpt">
+        <div className="chatgpt-header">
+          <AppIcon id="chatgpt" className="chatgpt-logo" />
+          <div className="chatgpt-title">
+            <div className="chatgpt-name">ChatGPT</div>
+            <div className="chatgpt-sub">Help</div>
+          </div>
+        </div>
+        <div className="chatgpt-prefs">
+          <div className="chatgpt-prefs-heading">About ChatGPT Aqua Edition</div>
+          <p className="chatgpt-prefs-note">
+            New Chat clears today's conversation and switches to it. The
+            Conversations list on the left, and the History browser above,
+            both jump between Today, Yesterday, and Earlier. Delete… clears
+            whichever conversation is currently open.
+          </p>
+          <p className="chatgpt-prefs-note">
+            By default this runs a canned script from June 2002. Add a Gemini
+            API key in Preferences to have it answer for real.
+          </p>
+          <div className="chatgpt-prefs-actions">
+            <button className="aqua-btn blue" onClick={() => setShowHelp(false)}>
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showPrefs) {
     return (
@@ -149,8 +276,8 @@ export function ChatGPT(_: { openApp: OpenApp }) {
         <div className="chatgpt-prefs">
           <div className="chatgpt-prefs-heading">Gemini API Key</div>
           <p className="chatgpt-prefs-note">
-            aquaOS is a static site — there's no server to hold a secret key, so
-            ChatGPT only goes live if you paste your own key here. It's stored
+            aquaOS is a static site, so there's no server to hold a secret
+            key. ChatGPT only goes live if you paste your own key here. It's stored
             in this browser's <code>localStorage</code> and sent only to
             Google's Gemini API, never anywhere else. Get a free key at{" "}
             <b>aistudio.google.com/apikey</b>, and consider restricting it to
@@ -203,11 +330,11 @@ export function ChatGPT(_: { openApp: OpenApp }) {
             <PrefsGlyph />
             Preferences
           </button>
-          <button className="chatgpt-tool">
+          <button className="chatgpt-tool" onClick={() => setShowHistory(true)}>
             <HistoryGlyph />
             History
           </button>
-          <button className="chatgpt-tool">
+          <button className="chatgpt-tool" onClick={() => setShowHelp(true)}>
             <HelpGlyph />
             Help
           </button>
@@ -218,14 +345,14 @@ export function ChatGPT(_: { openApp: OpenApp }) {
         <div className="chatgpt-sidebar">
           <div className="chatgpt-sidebar-title">Conversations</div>
           <div className="chatgpt-convos">
-            {CONVERSATIONS.map((c, i) => (
+            {convos.map((c, i) => (
               <div
-                key={c}
-                className={"chatgpt-convo" + (i === convo ? " selected" : "")}
-                onClick={() => setConvo(i)}
+                key={c.label}
+                className={"chatgpt-convo" + (i === active ? " selected" : "")}
+                onClick={() => setActive(i)}
               >
-                {c}
-                {i === convo && <span className="chatgpt-convo-arrow">›</span>}
+                {c.label}
+                {i === active && <span className="chatgpt-convo-arrow">›</span>}
               </div>
             ))}
           </div>
@@ -233,7 +360,9 @@ export function ChatGPT(_: { openApp: OpenApp }) {
             <button className="aqua-btn" onClick={newChat}>
               New Chat
             </button>
-            <button className="aqua-btn">Delete…</button>
+            <button className="aqua-btn" onClick={deleteConvo}>
+              Delete…
+            </button>
           </div>
         </div>
 
@@ -272,7 +401,7 @@ export function ChatGPT(_: { openApp: OpenApp }) {
       </div>
 
       <div className="chatgpt-footer">
-        ChatGPT — Aqua Edition v1.0 (2002) · {apiKey ? "Live via Gemini" : "Script mode"}
+        ChatGPT · Aqua Edition v1.0 (2002) · {apiKey ? "Live via Gemini" : "Script mode"}
         <LockGlyph />
       </div>
     </div>
